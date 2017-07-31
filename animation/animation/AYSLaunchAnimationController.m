@@ -46,11 +46,6 @@
     self.purposeLable.transform = CGAffineTransformMakeScale(0.1, 0.1);
     self.appNameLabel.hidden = YES;
     self.purposeLable.hidden = YES;
-
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
     [UIView animateWithDuration:1.0 animations:^{
         self.iconImageView.transform = CGAffineTransformIdentity;
@@ -85,6 +80,13 @@
             
         }];
     }];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+  
 }
 
 - (AYSAnimationDelegate *)animationDelegate {

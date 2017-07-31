@@ -35,7 +35,7 @@
         self.window.rootViewController = vc;
         self.window.rootViewController.view.alpha = 0;
         
-        [UIView animateWithDuration:5 animations:^{
+        [UIView animateWithDuration:1.5 animations:^{
             self.window.rootViewController.view.alpha = 1;
             imageView.alpha = 0;
         } completion:^(BOOL finished) {
