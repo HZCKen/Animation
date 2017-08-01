@@ -269,6 +269,7 @@
 				TargetAttributes = {
 					18D381461F2B0C560041FDCD = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = ZEXWT9R3Y9;
 						ProvisioningStyle = Automatic;
 					};
 					18D3815F1F2B0C560041FDCD = {
@@ -628,9 +629,11 @@
 			baseConfigurationReference = 12786C74162C839C649CE342 /* Pods-animation.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = ZEXWT9R3Y9;
 				INFOPLIST_FILE = animation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.aylson.www.animation;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.aylson.www.animation01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -640,9 +643,11 @@
 			baseConfigurationReference = EA2344AF644B60FA0E433537 /* Pods-animation.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = ZEXWT9R3Y9;
 				INFOPLIST_FILE = animation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.aylson.www.animation;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.aylson.www.animation01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

@@ -29,6 +29,8 @@
 /** purposeLayer */
 @property (nonatomic, strong) CAGradientLayer *purposeGradientLayer;
 
+/** 云朵动画 */
+@property (nonatomic, strong) CABasicAnimation *iconAnimation;
 
 @end
 
@@ -40,7 +42,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
 
+  
     self.iconImageView.transform = CGAffineTransformMakeScale(0.1, 0.1);
     self.appNameLabel.transform = CGAffineTransformMakeScale(0.1, 0.1);
     self.purposeLable.transform = CGAffineTransformMakeScale(0.1, 0.1);
@@ -50,17 +54,7 @@
     [UIView animateWithDuration:1.0 animations:^{
         self.iconImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
-        
-        [UIView animateWithDuration:1.0 animations:^{
-            self.appNameLabel.transform = CGAffineTransformIdentity;
-            self.purposeLable.transform = CGAffineTransformIdentity;
-        }];
-        
-        self.appNameLabel.hidden = NO;
-        self.appNameLabel.layer.mask = self.gradientLayer;
-        self.purposeLable.hidden = NO;
-        self.purposeLable.layer.mask = self.purposeGradientLayer;
-        
+        __weak typeof(self) weakSelf = self;
         [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *obj, NSUInteger idx, BOOL * _Nonnull stop) {
             POPSpringAnimation *animation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionY];
             animation.toValue = @(obj.center.y);
@@ -75,6 +69,19 @@
                 UIView *coverView = self.coverViews[idx];
                 coverView.alpha = 0;
                 
+                if (idx == self.imageViews.count - 1) {
+                    [UIView animateWithDuration:1.0 animations:^{
+                        self.appNameLabel.transform = CGAffineTransformIdentity;
+                        self.purposeLable.transform = CGAffineTransformIdentity;
+                    }];
+                    [weakSelf.iconImageView.layer addAnimation:weakSelf.iconAnimation forKey:@"iconAnimation"];
+                    
+                    self.appNameLabel.hidden = NO;
+                    self.appNameLabel.layer.mask = self.gradientLayer;
+                    self.purposeLable.hidden = NO;
+                    self.purposeLable.layer.mask = self.purposeGradientLayer;
+                }
+                
             };
             
             
@@ -83,11 +90,21 @@
 
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-  
+- (CABasicAnimation *)iconAnimation {
+    if (!_iconAnimation) {
+        _iconAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];//必须写opacity才行。
+        _iconAnimation.fromValue = [NSNumber numberWithFloat:1.0f];
+        _iconAnimation.toValue = [NSNumber numberWithFloat:0.5f];//这是透明度。
+        _iconAnimation.autoreverses = YES;
+        _iconAnimation.duration = 0.5;
+        _iconAnimation.repeatCount = 2;
+        _iconAnimation.removedOnCompletion = NO;
+        _iconAnimation.fillMode = kCAFillModeForwards;
+        _iconAnimation.timingFunction=[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    }
+    return _iconAnimation;
 }
+
 
 - (AYSAnimationDelegate *)animationDelegate {
     __weak  typeof(self) weakSelf = self;
