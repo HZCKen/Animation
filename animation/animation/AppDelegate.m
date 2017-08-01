@@ -22,27 +22,27 @@
     
     AYSLaunchAnimationController *lvc = [[AYSLaunchAnimationController alloc]init];
     __weak typeof(lvc) weakLvc = lvc;
-//    [lvc setCompletionBlock:^{
-//        UIImage *image = [self getNormalImage:weakLvc.view];
-//        
-//        UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
-//        imageView.frame = [UIScreen mainScreen].bounds;
-//        
-//        [self.window addSubview:imageView];
-//        
-//        
-//        ViewController *vc = [[ViewController alloc]init];
-//        self.window.rootViewController = vc;
-//        self.window.rootViewController.view.alpha = 0;
-//        
-//        [UIView animateWithDuration:3 animations:^{
-//            self.window.rootViewController.view.alpha = 1;
-//            imageView.alpha = 0;
-//        } completion:^(BOOL finished) {
-//            [imageView removeFromSuperview];
-//        }];
-//    
-//    }];
+    [lvc setCompletionBlock:^{
+        UIImage *image = [self getNormalImage:weakLvc.view];
+        
+        UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
+        imageView.frame = [UIScreen mainScreen].bounds;
+        
+        [self.window addSubview:imageView];
+        
+        
+        ViewController *vc = [[ViewController alloc]init];
+        self.window.rootViewController = vc;
+        self.window.rootViewController.view.alpha = 0;
+        
+        [UIView animateWithDuration:3 animations:^{
+            self.window.rootViewController.view.alpha = 1;
+            imageView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [imageView removeFromSuperview];
+        }];
+    
+    }];
     
     self.window.rootViewController = lvc;
     

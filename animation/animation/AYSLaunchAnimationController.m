@@ -43,63 +43,78 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setupUI];
+    
+    [self startAnimation];
+}
 
-  
+- (void)setupUI {
     self.iconImageView.transform = CGAffineTransformMakeScale(0.1, 0.1);
     self.appNameLabel.transform = CGAffineTransformMakeScale(0.1, 0.1);
     self.purposeLable.transform = CGAffineTransformMakeScale(0.1, 0.1);
     self.appNameLabel.hidden = YES;
     self.purposeLable.hidden = YES;
-    
+}
+
+/** 开始动画 */
+- (void)startAnimation {
     [UIView animateWithDuration:1.0 animations:^{
         self.iconImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
-        __weak typeof(self) weakSelf = self;
-        [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            POPSpringAnimation *animation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionY];
-            animation.toValue = @(obj.center.y);
-            animation.fromValue = @(obj.center.y + 500);
-            animation.springBounciness = 8;
-            animation.springSpeed = 8;
-            animation.beginTime = CACurrentMediaTime() + idx * 0.3;
-            obj.hidden = NO;
-            [obj pop_addAnimation:animation forKey:@"spring"];
-            
-            animation.completionBlock = ^(POPAnimation *anim, BOOL finished) {
-                UIView *coverView = self.coverViews[idx];
-                coverView.alpha = 0;
-                
-                if (idx == self.imageViews.count - 1) {
-                    [UIView animateWithDuration:1.0 animations:^{
-                        self.appNameLabel.transform = CGAffineTransformIdentity;
-                        self.purposeLable.transform = CGAffineTransformIdentity;
-                    }];
-                    [weakSelf.iconImageView.layer addAnimation:weakSelf.iconAnimation forKey:@"iconAnimation"];
-                    
-                    self.appNameLabel.hidden = NO;
-                    self.appNameLabel.layer.mask = self.gradientLayer;
-                    self.purposeLable.hidden = NO;
-                    self.purposeLable.layer.mask = self.purposeGradientLayer;
-                }
-                
-            };
-            
-            
-        }];
+        [self imageViewsBeginAnimation];
     }];
+}
 
+/** 图片组合动画 */
+- (void)imageViewsBeginAnimation {
+    __weak typeof(self) weakSelf = self;
+    [self.imageViews enumerateObjectsUsingBlock:^(UIImageView *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        POPSpringAnimation *animation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionY];
+        animation.toValue = @(obj.center.y);
+        animation.fromValue = @(obj.center.y + 500);
+        animation.springBounciness = 8;
+        animation.springSpeed = 8;
+        animation.beginTime = CACurrentMediaTime() + idx * 0.3;
+        obj.hidden = NO;
+        [obj pop_addAnimation:animation forKey:@"spring"];
+        
+        animation.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+            UIView *coverView = self.coverViews[idx];
+            coverView.alpha = 0;
+            
+            if (idx == self.imageViews.count - 1) {
+                [weakSelf iconImageViewAndLabelBeginAnimation];
+            }
+            
+        };
+    }];
+}
+
+/** 云朵和文字动画 */
+- (void)iconImageViewAndLabelBeginAnimation {
+    [UIView animateWithDuration:1.0 animations:^{
+        self.appNameLabel.transform = CGAffineTransformIdentity;
+        self.purposeLable.transform = CGAffineTransformIdentity;
+    }];
+    [self.iconImageView.layer addAnimation:self.iconAnimation forKey:@"iconAnimation"];
+    
+    self.appNameLabel.hidden = NO;
+    self.appNameLabel.layer.mask = self.gradientLayer;
+    self.purposeLable.hidden = NO;
+    self.purposeLable.layer.mask = self.purposeGradientLayer;
 }
 
 - (CABasicAnimation *)iconAnimation {
     if (!_iconAnimation) {
-        _iconAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];//必须写opacity才行。
+        _iconAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];//必须写opacity才行。闪烁效果
         _iconAnimation.fromValue = [NSNumber numberWithFloat:1.0f];
-        _iconAnimation.toValue = [NSNumber numberWithFloat:0.5f];//这是透明度。
+        _iconAnimation.toValue = [NSNumber numberWithFloat:0.3f];//这是透明度。
         _iconAnimation.autoreverses = YES;
-        _iconAnimation.duration = 0.5;
+        _iconAnimation.duration = 0.6;
         _iconAnimation.repeatCount = 2;
         _iconAnimation.removedOnCompletion = NO;
         _iconAnimation.fillMode = kCAFillModeForwards;
+        _iconAnimation.delegate = self.animationDelegate;
         _iconAnimation.timingFunction=[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
     }
     return _iconAnimation;
@@ -114,13 +129,16 @@
             if ([anim isEqual:[weakSelf.appNameLabel.layer.mask animationForKey:@"launchNameLabelAnimation"]]) {
                 NSLog(@"launchNameLabelAnimation finished");
                 weakSelf.appNameLabel.layer.mask = nil;
-                if (weakSelf.completionBlock) {
-                    weakSelf.completionBlock();
-                }
+           
             } else if ([anim isEqual:[weakSelf.purposeLable.layer.mask animationForKey:@"launchPurposeLabelAnimation"]]) {
                 NSLog(@"launchPurposeLabelAnimation finished");
                 weakSelf.purposeLable.layer.mask = nil;
                 
+            } else if ([anim isEqual:[weakSelf.iconImageView.layer animationForKey:@"iconAnimation"]]) {
+                NSLog(@"iconAnimation finished");
+                if (weakSelf.completionBlock) {
+                    weakSelf.completionBlock();
+                }
             }
         }];
     }
